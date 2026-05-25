@@ -1,0 +1,59 @@
+server:
+  port: 8081
+
+spring:
+  application:
+    name: springboot-satoken
+
+  # ---------- Redis（可选，关闭则 Token 存内存）----------
+  # 生产环境建议启用 Redis，重启不丢失 Token/Session
+  autoconfigure:
+    exclude: org.springframework.boot.autoconfigure.data.redis.RedisAutoConfiguration
+
+# ==================== Sa-Token 配置 ====================
+sa-token:
+  # Token 名称（即 Cookie 名称 / Header 名称）
+  token-name: satoken
+
+  # Token 有效期（秒），默认 30 天
+  timeout: 7200
+
+  # Token 最低活跃频率（秒），超时未访问则冻结
+  # active-timeout: 1800
+
+  # 是否允许同一账号多地同时登录（true=允许，false=顶掉旧登录）
+  is-concurrent: true
+
+  # 多人登录时是否共用一个 Token（false=每次登录生成新 Token）
+  is-share: false
+
+  # Token 风格：uuid | simple-uuid | random-32 | random-64 | random-128 | tik
+  token-style: uuid
+
+  # 是否输出操作日志
+  is-log: true
+
+  # 是否从 Cookie 里读取 Token
+  is-read-cookie: false
+
+  # 是否从请求体里读取 Token
+  is-read-body: false
+
+  # 是否从 Header 里读取 Token
+  is-read-header: true
+
+# ==================== Actuator ====================
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health,info
+  endpoint:
+    health:
+      show-details: always
+
+# ==================== 日志 ====================
+logging:
+  level:
+    com.quick.springbootsatoken: DEBUG
+    cn.dev33.satoken: INFO

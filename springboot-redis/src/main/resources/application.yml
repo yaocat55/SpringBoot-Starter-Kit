@@ -1,0 +1,51 @@
+spring:
+  application:
+    name: springboot-redis
+
+  # ==================== Redis 基础配置 ====================
+  data:
+    redis:
+      # --- 单机模式 ---
+      host: localhost
+      port: 6379
+      password:          # Redis 密码，无密码留空
+      database: 0        # 数据库索引（0-15）
+      timeout: 3000ms    # 连接超时时间
+      client-type: lettuce
+      # ssl:
+      #   enabled: true  # 若 Redis 开启 TLS 则取消注释
+
+      # --- 哨兵模式（启用时注释掉 host/port）---
+      # sentinel:
+      #   master: mymaster
+      #   nodes:
+      #     - 127.0.0.1:26379
+      #     - 127.0.0.1:26380
+      #     - 127.0.0.1:26381
+
+      # --- 集群模式（启用时注释掉 host/port）---
+      # cluster:
+      #   nodes:
+      #     - 127.0.0.1:7000
+      #     - 127.0.0.1:7001
+      #     - 127.0.0.1:7002
+      #   max-redirects: 3
+
+      lettuce:
+        pool:
+          enabled: true          # 启用连接池
+          max-active: 16         # 最大活跃连接数
+          max-idle: 8            # 最大空闲连接数
+          min-idle: 4            # 最小空闲连接数
+          max-wait: 2000ms       # 获取连接最大等待时间
+
+# ==================== Redisson 配置 ====================
+# Redisson 会优先读取 spring.data.redis 下的连接信息，
+# 以下仅覆盖高级参数；如果全部用默认值，Redisson 开箱即用无需额外配置。
+# 详细配置项见: https://github.com/redisson/redisson/wiki
+redisson:
+  # 线程数（Netty 线程池大小），默认 = 当前处理器数 * 2
+  # threads: 16
+  # netty-threads: 32
+  # 传输模式：NIO（默认）/ EPOLL（仅 Linux）
+  # transport-mode: NIO

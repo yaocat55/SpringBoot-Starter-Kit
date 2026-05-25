@@ -1,0 +1,9 @@
+spring:
+  application:
+    name: springboot-lombok
+server:
+  port: 8080
+
+logging:
+  level:
+    com.quick.springbootlombok: debug

@@ -1,0 +1,30 @@
+server:
+  port: 8080
+
+spring:
+  application:
+    name: springboot-security
+
+# ==================== JWT 配置 ====================
+jwt:
+  # JWT 签名密钥（至少 256 bit，生产环境使用环境变量注入，严禁硬编码到代码中）
+  secret: ${JWT_SECRET:your-256-bit-secret-key-here-change-in-production-min-32-chars}
+  # Access Token 过期时间（默认 2 小时）
+  access-token-expiration: 7200000
+  # Refresh Token 过期时间（默认 14 天）
+  refresh-token-expiration: 1209600000
+  # Token 前缀
+  token-prefix: Bearer
+  # HTTP Header 名称
+  header: Authorization
+
+# ==================== 安全白名单 ====================
+security:
+  # 无需认证即可访问的路径（逗号分隔，支持 Ant 风格通配符）
+  whitelist: /api/auth/login,/api/auth/register,/api/auth/refresh,/api/public/**,/swagger-ui/**,/v3/api-docs/**,/actuator/health
+
+# ==================== 日志 ====================
+logging:
+  level:
+    com.quick.springbootsecurity: DEBUG
+    org.springframework.security: INFO

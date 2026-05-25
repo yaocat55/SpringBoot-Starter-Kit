@@ -1,0 +1,169 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.quick.springbootapiresult.mapper.UserMapper">
+
+    <!-- ============================================================ -->
+    <!--  ResultMap                                                   -->
+    <!-- ============================================================ -->
+    <resultMap id="UserMap" type="com.quick.springbootapiresult.model.User">
+        <id     property="id"     column="id"/>
+        <result property="name"   column="name"/>
+        <result property="email"  column="email"/>
+        <result property="age"    column="age"/>
+        <result property="status" column="status"/>
+        <result property="role"   column="role"/>
+    </resultMap>
+
+    <sql id="columns">id, name, email, age, status, role</sql>
+
+    <!-- ============================================================ -->
+    <!--  通用条件片段（生产级：所有查询条件集中管理）                    -->
+    <!--  直接取 UserQuery 的属性，无需 req. 前缀                       -->
+    <!-- ============================================================ -->
+    <sql id="queryWhere">
+        <where>
+
+            <if test="blurry != null and blurry != ''">
+                AND (name LIKE CONCAT('%', #{blurry}, '%')
+                     OR email LIKE CONCAT('%', #{blurry}, '%'))
+            </if>
+
+            <if test="id != null">
+                AND id = #{id}
+            </if>
+
+            <if test="idList != null and idList.size() > 0">
+                AND id IN
+                <foreach collection="idList" item="item" open="(" close=")" separator=",">
+                    #{item}
+                </foreach>
+            </if>
+
+            <if test="email != null and email != ''">
+                AND email = #{email}
+            </if>
+
+            <if test="status != null and status != ''">
+                AND status = #{status}
+            </if>
+
+            <if test="role != null and role != ''">
+                AND role = #{role}
+            </if>
+
+            <if test="betweenTime != null and betweenTime.size() >= 2">
+                AND created_at BETWEEN #{betweenTime[0]} AND #{betweenTime[1]}
+            </if>
+
+            <if test="createBeginTime != null and createBeginTime != ''">
+                AND created_at &gt;= #{createBeginTime}
+            </if>
+
+            <if test="createEndTime != null and createEndTime != ''">
+                AND created_at <![CDATA[<]]> #{createEndTime}
+            </if>
+
+        </where>
+    </sql>
+
+    <!-- ============================================================ -->
+    <!--  1. 生产级条件查询（继承自 BaseMapper）                        -->
+    <!--     searchByCondition / searchCount                          -->
+    <!--     queryWhere + BaseMapper.paginationSql 组合               -->
+    <!-- ============================================================ -->
+    <select id="searchByCondition" resultMap="UserMap">
+        SELECT <include refid="columns"/>
+        FROM t_user
+        <include refid="queryWhere"/>
+        <include refid="com.quick.springbootapiresult.common.BaseMapper.paginationSql"/>
+    </select>
+
+    <select id="searchCount" resultType="int">
+        SELECT COUNT(*)
+        FROM t_user
+        <include refid="queryWhere"/>
+    </select>
+
+    <!-- ============================================================ -->
+    <!--  2. 简单分页 + 模糊（快速上手）                                -->
+    <!-- ============================================================ -->
+    <select id="selectPage" resultMap="UserMap">
+        SELECT <include refid="columns"/>
+        FROM t_user
+        <where>
+            <if test="blurry != null and blurry != ''">
+                AND (name LIKE CONCAT('%', #{blurry}, '%')
+                     OR email LIKE CONCAT('%', #{blurry}, '%'))
+            </if>
+        </where>
+        <choose>
+            <when test="page.sortField != null and page.sortField.size() > 0">
+                ORDER BY ${page.sortString}
+            </when>
+            <otherwise>
+                ORDER BY created_at DESC
+            </otherwise>
+        </choose>
+        LIMIT #{page.pageBegin}, #{page.pageSize}
+    </select>
+
+    <select id="countByBlurry" resultType="long">
+        SELECT COUNT(*) FROM t_user
+        <where>
+            <if test="blurry != null and blurry != ''">
+                AND (name LIKE CONCAT('%', #{blurry}, '%')
+                     OR email LIKE CONCAT('%', #{blurry}, '%'))
+            </if>
+        </where>
+    </select>
+
+    <!-- ============================================================ -->
+    <!--  3. 基础 CRUD                                                 -->
+    <!-- ============================================================ -->
+    <select id="findById" resultMap="UserMap">
+        SELECT <include refid="columns"/> FROM t_user WHERE id = #{id}
+    </select>
+
+    <select id="findByEmail" resultMap="UserMap">
+        SELECT <include refid="columns"/> FROM t_user WHERE email = #{email}
+    </select>
+
+    <!-- 动态 INSERT：只插非空字段 -->
+    <insert id="insert" useGeneratedKeys="true" keyProperty="id">
+        INSERT INTO t_user
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="name != null and name != ''">name,</if>
+            <if test="email != null and email != ''">email,</if>
+            <if test="age != null">age,</if>
+            <if test="status != null and status != ''">status,</if>
+            <if test="role != null and role != ''">role,</if>
+        </trim>
+        <trim prefix="VALUES (" suffix=")" suffixOverrides=",">
+            <if test="name != null and name != ''">#{name},</if>
+            <if test="email != null and email != ''">#{email},</if>
+            <if test="age != null">#{age},</if>
+            <if test="status != null and status != ''">#{status},</if>
+            <if test="role != null and role != ''">#{role},</if>
+        </trim>
+    </insert>
+
+    <!-- 动态 UPDATE：只更新非空字段 -->
+    <update id="update">
+        UPDATE t_user
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="name != null and name != ''">name = #{name},</if>
+            <if test="email != null and email != ''">email = #{email},</if>
+            <if test="age != null">age = #{age},</if>
+            <if test="status != null and status != ''">status = #{status},</if>
+            <if test="role != null and role != ''">role = #{role},</if>
+            updated_at = now(),
+        </trim>
+        WHERE id = #{id}
+    </update>
+
+    <delete id="deleteById">
+        DELETE FROM t_user WHERE id = #{id}
+    </delete>
+
+</mapper>

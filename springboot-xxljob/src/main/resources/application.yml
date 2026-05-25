@@ -1,0 +1,32 @@
+spring:
+  application:
+    name: springboot-xxljob
+
+server:
+  port: 8082
+
+# ======================== XXL-JOB 配置 ========================
+xxl:
+  job:
+    # 是否启用 XXL-JOB（设为 false 时 XxlJobSpringExecutor 不会创建）
+    enabled: true
+
+    # 调度中心 Admin 地址（集群模式用逗号分隔）
+    admin:
+      addresses: http://localhost:8080/xxl-job-admin
+
+    # 执行器配置
+    executor:
+      appname: springboot-xxljob-executor  # 需与 Admin 后台「执行器管理」中注册的名称一致
+      port: 9999                            # 执行器端口（Admin 通过此端口回调调度）
+      logpath: logs/xxl-job                 # 运行日志本地路径
+      logretentiondays: 30                  # 日志保留天数
+
+    # 访问令牌（需与 Admin 后台配置的 accessToken 一致）
+    access-token: default_token
+
+# ======================== 日志 ========================
+logging:
+  level:
+    com.quick.springbootxxljob: debug
+    com.xxl.job: info

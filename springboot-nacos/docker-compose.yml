@@ -1,0 +1,22 @@
+# Nacos 2.3.2 单机模式（测试用）
+# 启动：docker-compose up -d
+# 停止：docker-compose down
+# 控制台：http://localhost:8848/nacos  登录：nacos/nacos
+
+version: '3'
+
+services:
+  nacos:
+    image: nacos/nacos-server:v2.3.2
+    container_name: nacos-standalone
+    environment:
+      - MODE=standalone              # 单机模式
+      - PREFER_HOST_MODE=hostname    # 使用宿主机名，避免虚拟网卡 IP 问题
+    ports:
+      - "8848:8848"                  # HTTP 端口（控制台 + API）
+      - "9848:9848"                  # gRPC 端口（客户端通信）
+    volumes:
+      - nacos_data:/home/nacos/data
+
+volumes:
+  nacos_data:

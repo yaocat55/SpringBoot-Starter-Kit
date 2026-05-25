@@ -1,0 +1,55 @@
+spring:
+  application:
+    name: springboot-emqx
+
+server:
+  port: 8081
+
+# ======================== EMQX 配置 ========================
+emqx:
+  # 设为 true 启用 EMQX 连接（默认关闭，确保不连 EMQX 时也能启动）
+  enabled: false
+
+  # Broker 地址（EMQX 默认端口: TCP 1883, WebSocket 8083）
+  broker-url: tcp://localhost:1883
+
+  # MQTT 客户端 ID（EMQX 中每个客户端 ID 唯一）
+  client-id: springboot-emqx-demo
+
+  # 认证信息（对应 EMQX 内置数据库 / Dashboard 中创建的用户）
+  username: admin
+  password: public
+
+  # === MQTT 5.0 会话配置 ===
+  # 会话有效期（秒），断开后 EMQX 保留该会话的时间
+  # 0 = 断开即销毁, -1 = 永久保留
+  session-expiry-interval: 3600
+
+  # === 连接参数 ===
+  connection-timeout: 30
+  keep-alive-interval: 60
+  auto-reconnect: true
+  reconnect-max-delay: 10000
+
+  # === 遗嘱消息（Last Will Testament） ===
+  enable-lwt: false
+  lwt-topic: /device/demo/status
+  lwt-payload: "OFFLINE"
+  lwt-qos: 1
+  lwt-retained: true
+
+  # === 离线缓冲区 ===
+  max-buffer-size: 10000
+
+# ======================== 日志 ========================
+logging:
+  level:
+    com.quick.springbootemqx: debug
+    org.eclipse.paho: info
+
+# ======================== Actuator ========================
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health,info

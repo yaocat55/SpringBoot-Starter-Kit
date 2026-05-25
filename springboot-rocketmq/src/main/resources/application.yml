@@ -1,0 +1,71 @@
+server:
+  port: 8080
+
+spring:
+  application:
+    name: springboot-rocketmq
+
+# ==================== RocketMQ 配置 ====================
+rocketmq:
+  # NameServer 地址（必填，多个用分号分隔）
+  name-server: localhost:9876
+
+  # ==================== Producer 配置 ====================
+  producer:
+    # 生产者组名（同一组 Producer 发送同一类消息）
+    group: ${spring.application.name}-producer-group
+    # 发送超时（毫秒）
+    send-message-timeout: 3000
+    # 同步发送重试次数
+    retry-times-when-send-failed: 2
+    # 异步发送重试次数
+    retry-times-when-send-async-failed: 2
+    # 消息体最大大小（字节，默认 4MB）
+    max-message-size: 4194304
+    # 是否在启动时检查 NameServer 可用（生产环境建议 true）
+    check-name-server: true
+    # 开启消息轨迹（需要 broker 也开启）
+    enable-msg-trace: false
+    # 事务消息监听器 Bean 名称
+    transaction-listener: transactionListener
+
+  # ==================== Consumer 配置 ====================
+  consumer:
+    # 消费者组名
+    group: ${spring.application.name}-consumer-group
+    # 消费模式：CLUSTERING（集群） | BROADCASTING（广播）
+    message-model: CLUSTERING
+    # 消费线程池最小/最大线程数
+    consume-thread-min: 10
+    consume-thread-max: 30
+    # 一次拉取的消息数
+    pull-batch-size: 32
+    # 拉取消息间隔（毫秒）
+    pull-interval: 0
+    # 消费失败重试次数（达到后进死信）
+    max-reconsume-times: 16
+    # 顺序消费失败时，是否挂起队列直到超时（默认 -1 无限等待）
+    suspend-current-queue-time-millis: 1000
+    # 从哪个 Offset 开始消费
+    # CONSUME_FROM_LAST_OFFSET — 从队列最后开始（默认，忽略历史消息）
+    # CONSUME_FROM_FIRST_OFFSET — 从队列最初开始（新消费者组首次启动）
+    # CONSUME_FROM_TIMESTAMP — 从指定时间戳开始
+    consume-from-where: CONSUME_FROM_LAST_OFFSET
+
+# ==================== 业务配置 ====================
+rocketmq-config:
+  # 订单 Topic
+  order-topic: order-topic
+  order-tag: order-created
+  # 延迟 Topic
+  delay-topic: delay-topic
+  delay-tag: delay-notify
+  # 死信 Topic（RocketMQ 自动生成 %DLQ% 前缀，此处为业务死信 topic）
+  dead-letter-topic: dead-letter-topic
+
+# ==================== 日志 ====================
+logging:
+  level:
+    com.quick.springbootrocketmq: DEBUG
+    org.apache.rocketmq: INFO
+    RocketmqClient: WARN

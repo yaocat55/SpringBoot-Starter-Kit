@@ -1,0 +1,44 @@
+spring:
+  application:
+    name: springboot-dynamictp
+
+server:
+  port: 8083
+
+# ======================== DynamicTp config ========================
+dynamictp:
+  global-executor-props:
+    rejected-handler-type: CallerRunsPolicy
+    queue-type: VariableLinkedBlockingQueue
+    wait-for-tasks-to-complete-on-shutdown: true
+    await-termination-seconds: 5
+
+  # ===== custom thread pool definitions =====
+  executors:
+    - thread-pool-name: order-processor
+      executor-type: common
+      core-pool-size: 5
+      maximum-pool-size: 20
+      queue-capacity: 200
+      thread-name-prefix: order-
+
+    - thread-pool-name: notification-sender
+      core-pool-size: 3
+      maximum-pool-size: 10
+      queue-capacity: 100
+      thread-name-prefix: notify-
+      rejected-handler-type: DiscardPolicy
+
+    - thread-pool-name: report-generator
+      core-pool-size: 2
+      maximum-pool-size: 5
+      queue-capacity: 50
+      thread-name-prefix: report-
+      allow-core-thread-time-out: true
+      keep-alive-time: 30
+
+# ======================== logging ========================
+logging:
+  level:
+    com.quick.springbootdynamictp: debug
+    org.dromara.dynamictp: info

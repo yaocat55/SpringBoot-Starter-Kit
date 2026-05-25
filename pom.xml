@@ -1,0 +1,76 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+    <parent>
+        <groupId>org.springframework.boot</groupId>
+        <artifactId>spring-boot-starter-parent</artifactId>
+        <version>3.5.14</version>
+        <relativePath/> <!-- lookup parent from repository -->
+    </parent>
+    <groupId>com.quick</groupId>
+    <artifactId>springboot-starter-kit</artifactId>
+    <version>0.0.1-SNAPSHOT</version>
+    <name>springboot-starter-kit</name>
+    <description>springboot-starter-kit</description>
+    <url/>
+    <licenses>
+        <license/>
+    </licenses>
+    <developers>
+        <developer/>
+    </developers>
+
+
+    <packaging>pom</packaging>
+    <modules>
+        <module>spring-rabbitmq</module>
+        <module>springboot-kafka</module>
+        <module>springboot-redis</module>
+        <module>springboot-rocketmq</module>
+        <module>springboot-security</module>
+        <module>springboot-aliyun-mqtt</module>
+        <module>springboot-satoken</module>
+        <module>springboot-lombok</module>
+        <module>springboot-emqx</module>
+        <module>springboot-xxljob</module>
+        <module>springboot-dynamictp</module>
+        <module>springboot-dubbo</module>
+        <module>springboot-grpc</module>
+        <module>springboot-openfeign</module>
+        <module>springboot-mongdb</module>
+        <module>springboot-caffeine</module>
+        <module>springboot-exception</module>
+        <module>springboot-apiresult</module>
+    </modules>
+
+
+
+    <properties>
+        <java.version>17</java.version>
+    </properties>
+
+
+    <dependencies>
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-test</artifactId>
+            <scope>test</scope>
+        </dependency>
+    </dependencies>
+
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>org.springframework.boot</groupId>
+                <artifactId>spring-boot-maven-plugin</artifactId>
+            </plugin>
+        </plugins>
+    </build>
+
+</project>

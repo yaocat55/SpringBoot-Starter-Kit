@@ -1,0 +1,24 @@
+spring:
+  application:
+    name: springboot-grpc
+
+server:
+  port: 8085
+
+# ======================== gRPC config ========================
+grpc:
+  server:
+    # gRPC 服务端端口（和 REST 的 8085 分开，这是 gRPC 协议专用端口）
+    port: 9090
+  client:
+    # 客户端连接的 gRPC 服务（key 是逻辑名，对应 @GrpcClient 注解的值）
+    local-grpc-server:
+      # static:// 表示直连（不走名字服务），本地演示用。生产可换成 discovery://
+      address: static://localhost:9090
+      negotiation-type: plaintext   # 明文传输（生产环境请换成 TLS）
+
+# ======================== logging ========================
+logging:
+  level:
+    com.quick.springbootgrpc: debug
+    net.devh: info

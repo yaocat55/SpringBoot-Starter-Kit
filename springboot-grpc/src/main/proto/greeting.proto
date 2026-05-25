@@ -1,0 +1,34 @@
+syntax = "proto3";
+
+option java_package = "com.quick.springbootgrpc.proto";
+option java_multiple_files = false;
+option java_outer_classname = "GreetingProto";
+
+// GreetingService —— gRPC 服务定义（IDL 契约）
+// .proto 文件是 gRPC 的核心：定义"有哪些方法 + 传什么参数 + 返回什么"
+// 编译器会根据它生成 Java stub，服务端和客户端都依赖同一份接口定义
+service GreetingService {
+  // 一问一答（unary RPC）：发送一个名字，返回一句问候
+  rpc SayHello (HelloRequest) returns (HelloReply);
+
+  // 获取服务端信息（也是 unary RPC）
+  rpc GetServerInfo (ServerInfoRequest) returns (ServerInfoReply);
+}
+
+message HelloRequest {
+  string name = 1;
+}
+
+message HelloReply {
+  string message = 1;
+}
+
+message ServerInfoRequest {
+  // 空请求，可以改成带参数
+}
+
+message ServerInfoReply {
+  string thread_name = 1;
+  string timestamp = 2;
+  string java_version = 3;
+}

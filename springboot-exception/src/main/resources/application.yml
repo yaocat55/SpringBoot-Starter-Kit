@@ -1,0 +1,10 @@
+spring:
+  application:
+    name: springboot-exception
+
+server:
+  port: 8089
+
+logging:
+  level:
+    com.quick.springbootexception: debug

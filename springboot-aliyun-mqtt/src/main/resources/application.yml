@@ -1,0 +1,89 @@
+server:
+  port: 8080
+
+spring:
+  application:
+    name: springboot-aliyun-mqtt
+
+# ==================== 阿里云 MQTT 配置 ====================
+aliyun:
+  mqtt:
+    # ---------- 开关 ----------
+    # 设置为 true 才会创建 MQTT 客户端并连接 Broker
+    # 开发环境保持 false，不影响应用启动
+    enabled: false
+
+    # ---------- 缓冲 ----------
+    # 断线时消息暂存到内存缓冲，重连后自动补发
+    # 缓冲最大容量（超过后丢弃最旧消息），默认 10000
+    max-buffer-size: 10000
+    # ---------- 连接参数 ----------
+    # 阿里云 MQTT 实例接入点（控制台 → 实例详情 → 接入点信息）
+    # TCP 端口: 1883, SSL 端口: 8883
+    broker-url: tcp://post-cn-xxxx.mqtt.aliyuncs.com:1883
+
+    # MQTT Client ID
+    # 阿里云格式: GID_<GroupID>@@@<ClientID>
+    # 需先在控制台创建 Group ID 和设备 Client ID
+    client-id: GID_DEFAULT@@@demo-device-001
+
+    # 阿里云 MQTT 实例 ID（控制台 → 实例详情 → 实例 ID，格式如 post-cn-xxxx）
+    instance-id: post-cn-xxxx
+
+    # AccessKey（阿里云 RAM 账号，建议使用子账号并授予 MQTT 相关权限）
+    access-key: ${ALIYUN_ACCESS_KEY:your-access-key}
+
+    # SecretKey
+    secret-key: ${ALIYUN_SECRET_KEY:your-secret-key}
+
+    # ---------- 会话参数 ----------
+    # 是否清除会话
+    # true — 每次连接创建全新会话（Broker 不保留离线消息）
+    # false — 持久会话（Broker 保留 QoS≥1 的离线消息，重连后自动推送）
+    clean-session: true
+
+    # 连接超时（秒）
+    connection-timeout: 30
+
+    # Keep Alive 间隔（秒）—— 超过 1.5 倍无心跳则 Broker 判定客户端离线
+    keep-alive-interval: 60
+
+    # ---------- 自动重连 ----------
+    # 是否启用自动重连
+    auto-reconnect: true
+
+    # 重连间隔（毫秒），首次失败后等待多久重试
+    reconnect-interval-ms: 5000
+
+    # ---------- 遗嘱消息（Last Will and Testament）----------
+    # 客户端异常断线时 Broker 自动发布此消息，用于通知其他设备该设备已离线
+    enable-lwt: false
+    lwt-topic: device/offline
+    lwt-message: "{\"deviceId\":\"demo-device-001\",\"status\":\"offline\",\"timestamp\":\"now\"}"
+    lwt-qos: 1
+    lwt-retained: false
+
+# ==================== 业务配置 ====================
+mqtt-config:
+  # 默认 Topic 前缀（阿里云 MQTT 中，Topic 必须以 "/" 开头，且为父子级结构）
+  topic-prefix: /device
+  # 默认 QoS 级别（0 — 最多一次，1 — 至少一次，2 — 恰好一次）
+  default-qos: 1
+  # 订阅时使用的默认 QoS
+  subscribe-qos: 1
+
+# ==================== 日志 ====================
+logging:
+  level:
+    com.quick.springbootaliyunmqtt: DEBUG
+    org.eclipse.paho: INFO
+
+# ==================== Actuator ====================
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health,info
+  endpoint:
+    health:
+      show-details: always

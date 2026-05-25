@@ -1,0 +1,36 @@
+spring:
+  application:
+    name: springboot-apiresult
+
+  # H2 内存数据库（演示用，生产换成 MySQL 连接信息）
+  datasource:
+    url: jdbc:h2:mem:testdb;DB_CLOSE_DELAY=-1;MODE=MySQL
+    driver-class-name: org.h2.Driver
+    username: sa
+    password:
+  h2:
+    console:
+      enabled: true
+      path: /h2-console
+
+  # 启动时执行 schema.sql 建表 + data.sql 插数据
+  sql:
+    init:
+      mode: always
+      schema-locations: classpath:sql/schema.sql
+      data-locations: classpath:sql/data.sql
+
+# MyBatis
+mybatis:
+  mapper-locations: classpath:mapper/**/*.xml
+  type-aliases-package: com.quick.springbootapiresult.model
+  configuration:
+    map-underscore-to-camel-case: true
+    log-impl: org.apache.ibatis.logging.stdout.StdOutImpl
+
+server:
+  port: 8090
+
+logging:
+  level:
+    com.quick.springbootapiresult: debug

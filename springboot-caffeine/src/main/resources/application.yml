@@ -1,0 +1,14 @@
+spring:
+  application:
+    name: springboot-caffeine
+  cache:
+    type: caffeine
+    caffeine:
+      spec: maximumSize=500,expireAfterWrite=10m
+
+server:
+  port: 8088
+
+logging:
+  level:
+    com.quick.springbootcaffeine: debug

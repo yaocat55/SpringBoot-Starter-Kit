@@ -1,0 +1,22 @@
+# ============================================================
+# bootstrap.yml —— Nacos 配置中心
+# 优先级高于 application.yml，应用启动时最先加载
+# ============================================================
+
+spring:
+  application:
+    name: nacos-demo                    # 服务名，对应 Nacos Data ID 的前缀
+
+  cloud:
+    nacos:
+      config:
+        server-addr: 127.0.0.1:8848     # Nacos 服务地址
+        namespace: public               # 命名空间（默认 public 可以不填）
+        group: DEFAULT_GROUP            # 配置分组
+        file-extension: yaml            # 配置文件类型：yaml / properties
+        # 以上配置对应的 Nacos Data ID = nacos-demo.yaml（应用名.文件后缀）
+        # 也可以显式指定：
+        # shared-configs:
+        #   - data-id: common.yaml       # 多个服务共享的公共配置
+        #     group: DEFAULT_GROUP
+        #     refresh: true              # 是否动态刷新

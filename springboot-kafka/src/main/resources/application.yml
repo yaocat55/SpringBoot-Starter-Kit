@@ -1,0 +1,95 @@
+server:
+  port: 8080
+
+spring:
+  application:
+    name: springboot-kafka
+
+  # ==================== Kafka 连接配置 ====================
+  kafka:
+    # Bootstrap Server 地址（必填，多个用逗号分隔）
+    bootstrap-servers: localhost:9092
+
+    # ==================== Producer 配置 ====================
+    producer:
+      # 键/值序列化器
+      key-serializer: org.apache.kafka.common.serialization.StringSerializer
+      value-serializer: org.springframework.kafka.support.serializer.JsonSerializer
+      # 确认机制：0=不等确认 1=Leader确认 all/-1=所有ISR确认（最强可靠）
+      acks: all
+      # 发送失败重试次数
+      retries: 5
+      # 批量发送大小（字节，默认 16KB）
+      batch-size: 16384
+      # 发送延迟（毫秒，凑满 batch-size 前最多等这么久）
+      linger-ms: 5
+      # 缓冲区内存大小（字节，默认 32MB）
+      buffer-memory: 33554432
+      # 压缩类型：none / gzip / snappy / lz4 / zstd
+      compression-type: snappy
+      # 幂等性（保证 exactly-once，要求 acks=all, retries>0, max.in.flight=5）
+      properties:
+        enable.idempotence: true
+        # 幂等模式下，单连接最多允许 5 个未确认请求
+        max.in.flight.requests.per.connection: 5
+
+    # ==================== Consumer 配置 ====================
+    consumer:
+      # 键/值反序列化器
+      key-deserializer: org.apache.kafka.common.serialization.StringDeserializer
+      value-deserializer: org.springframework.kafka.support.serializer.JsonDeserializer
+      # 消费者组 ID
+      group-id: ${spring.application.name}-consumer-group
+      # Offset 重置策略：earliest=从头开始 latest=从最新开始（默认） none=无offset时抛异常
+      auto-offset-reset: earliest
+      # 是否自动提交 Offset（推荐 false，手动控制）
+      enable-auto-commit: false
+      # 单次拉取最大消息条数
+      max-poll-records: 100
+      # 两次 poll 之间的最大间隔（毫秒，超时触发 rebalance）
+      max-poll-interval-ms: 300000
+      # 心跳间隔（毫秒）
+      heartbeat-interval-ms: 3000
+      # Session 超时（毫秒）
+      session-timeout-ms: 45000
+      # JSON 反序列化配置
+      properties:
+        # 信任的包（反序列化时类型安全检查）
+        spring.json.trusted.packages: "com.quick.springbootkafka.model"
+        # 类型映射（消息头中的 __TypeId__ 映射到具体类）
+        spring.json.type.mapping: "OrderMessage:com.quick.springbootkafka.model.OrderMessage,MessageWrapper:com.quick.springbootkafka.model.MessageWrapper"
+        # 反序列化时是否使用类型头信息
+        spring.json.use.type.headers: true
+
+    # ==================== Listener 配置 ====================
+    listener:
+      # 监听器容器类型：single（单线程）| batch（批量）
+      type: single
+      # 并发消费者数（分区数 <= 消费者数时每个消费者分配一个分区）
+      concurrency: 4
+      # 手动 ACK 模式
+      ack-mode: manual
+      # 是否在事务中消费
+      # transaction-manager: kafkaTransactionManager
+
+    # ==================== Admin 配置（用于代码创建 Topic） ====================
+    # admin:
+    #   auto-create: true
+    #   properties:
+    #     bootstrap.servers: ${spring.kafka.bootstrap-servers}
+
+# ==================== 业务配置（自定义） ====================
+kafka:
+  # 订单 Topic
+  order-topic: order-topic
+  # 死信 Topic（消费失败的消息）
+  dead-letter-topic: order-topic.DLT
+  # 延迟 Topic（需要额外组件或手动实现）
+  delay-topic: delay-topic
+
+# ==================== 日志 ====================
+logging:
+  level:
+    com.quick.springbootkafka: DEBUG
+    org.springframework.kafka: INFO
+    org.apache.kafka: WARN

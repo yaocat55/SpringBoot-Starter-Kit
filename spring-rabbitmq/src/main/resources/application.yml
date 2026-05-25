@@ -1,0 +1,81 @@
+server:
+  port: 8080
+
+spring:
+  application:
+    name: spring-rabbitmq
+
+  # ==================== RabbitMQ 连接配置 ====================
+  rabbitmq:
+    # --- 单机模式 ---
+    host: localhost
+    port: 5672
+    username: guest
+    password: guest
+    virtual-host: /
+    # 连接超时
+    connection-timeout: 3000ms
+    # 请求心跳超时
+    requested-heartbeat: 60s
+    # 是否启用 publisher confirm（发送方确认）
+    publisher-confirm-type: correlated
+    # 是否启用 publisher return（消息无法路由时回调）
+    publisher-returns: true
+
+    # --- 多节点地址 (addresses 和 host+port 二选一) ---
+    # addresses: 192.168.1.10:5672,192.168.1.11:5672,192.168.1.12:5672
+
+    # --- SSL / TLS (生产环境建议开启) ---
+    # ssl:
+    #   enabled: true
+    #   algorithm: TLSv1.2
+
+    # ==================== Listener 配置 ====================
+    listener:
+      type: simple  # simple | direct
+      simple:
+        # 消费者并发数
+        concurrency: 4        # 最小消费者数
+        max-concurrency: 8    # 最大消费者数（根据队列积压动态扩大）
+        # 每次抓取的消息数（prefetch：消费者预取，调大提升吞吐但可能分配不均）
+        prefetch: 50
+        # 消费失败后的重试
+        retry:
+          enabled: true
+          max-attempts: 5                # 最大重试次数（含首次）
+          initial-interval: 1000ms       # 首次重试间隔
+          multiplier: 2                  # 间隔倍增因子（1s → 2s → 4s → 8s）
+          max-interval: 10000ms          # 最大重试间隔
+        # 手动 ACK 模式（推荐，配合异常处理完成 nack / reject）
+        acknowledge-mode: manual
+        # 不自动重试时，将失败消息重新入队（默认 true，改为 false 避免死循环）
+        default-requeue-rejected: false
+
+    # ==================== Template 配置 ====================
+    template:
+      # 发送超时
+      receive-timeout: 3000ms
+      # 回复超时（RPC 模式）
+      reply-timeout: 5000ms
+      # 当 mandatory=true 且消息无法路由到队列时，回调 returnCallback
+      mandatory: true
+      # 默认交换机
+      exchange: ""
+      # 默认路由键
+      routing-key: ""
+
+# ==================== 业务配置（自定义） ====================
+rabbitmq:
+  # 死信交换机 / 队列配置
+  dead-letter:
+    exchange: dead.letter.exchange
+    queue: dead.letter.queue
+    routing-key: dead.letter.routingkey
+  # 消息 TTL (毫秒) — 30 分钟
+  message-ttl: 1800000
+
+# ==================== 日志 ====================
+logging:
+  level:
+    com.quick.springrabbitmq: DEBUG
+    org.springframework.amqp: INFO

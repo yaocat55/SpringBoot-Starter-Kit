@@ -1,0 +1,17 @@
+# ============================================================
+# application.yml —— 应用主配置 + Nacos 服务发现
+# ============================================================
+
+server:
+  port: 8080
+
+spring:
+  cloud:
+    nacos:
+      discovery:
+        server-addr: 127.0.0.1:8848     # Nacos 服务地址（与配置中心同一个）
+        namespace: public
+        group: DEFAULT_GROUP
+        # 注册时带上元数据，方便在 Nacos 控制台区分环境
+        metadata:
+          version: v1

@@ -1,0 +1,16 @@
+spring:
+  application:
+    name: springboot-mongdb
+  data:
+    mongodb:
+      # 连接字符串（默认连本地 27017，可不配）
+      # uri: mongodb://localhost:27017/springboot_mongdb_demo
+      database: springboot_mongdb_demo
+
+server:
+  port: 8087
+
+logging:
+  level:
+    com.quick.springbootmongdb: debug
+    org.springframework.data.mongodb: info

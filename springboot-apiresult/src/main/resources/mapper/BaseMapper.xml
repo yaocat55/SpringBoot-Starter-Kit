@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.quick.springbootapiresult.common.BaseMapper">
+
+    <!--
+      可复用的分页 SQL 片段。
+      所有 Mapper XML 通过 <include refid="...BaseMapper.paginationSql"/> 引用。
+
+      要求：查询参数对象必须提供以下属性
+        - sortField  (List<String>)  排序字段列表
+        - sortString (String)        拼好的 ORDER BY 字符串
+        - pageBegin  (int)           LIMIT 起始位置
+        - pageSize   (int)           每页大小
+    -->
+    <sql id="paginationSql">
+        <choose>
+            <when test="sortField != null and sortField.size() > 0">
+                ORDER BY ${sortString}
+            </when>
+            <otherwise>
+                ORDER BY created_at DESC
+            </otherwise>
+        </choose>
+        <if test="pageSize > 0">
+            LIMIT #{pageBegin}, #{pageSize}
+        </if>
+    </sql>
+
+</mapper>
