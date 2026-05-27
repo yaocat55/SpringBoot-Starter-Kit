@@ -1,0 +1,19 @@
+spring:
+  application:
+    name: springboot-qiniu
+  servlet:
+    multipart:
+      max-file-size: 500MB       # 后端直传场景的文件大小限制
+      max-request-size: 500MB
+
+# ==================== 七牛云配置 ====================
+qiniu:
+  access-key: your-access-key           # 七牛云 AccessKey
+  secret-key: your-secret-key           # 七牛云 SecretKey
+  bucket: your-bucket-name              # 存储空间名称
+  domain: https://cdn.example.com       # CDN 加速域名 / 默认域名
+  expire-seconds: 3600                  # 上传凭证有效期（秒）
+  # ---------- 音视频场景专用 ----------
+  callback-url: https://your-server.com/qiniu/qiniu-callback   # 七牛上传回调地址（需公网可达）
+  persistent-pipeline: your-pipeline    # 持久化处理队列（在七牛控制台创建）
+  persistent-notify-url: https://your-server.com/qiniu/pfop-callback  # 转码完成回调地址

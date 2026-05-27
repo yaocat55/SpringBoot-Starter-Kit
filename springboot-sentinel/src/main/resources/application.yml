@@ -1,0 +1,73 @@
+spring:
+  application:
+    name: springboot-sentinel
+
+server:
+  port: 8085
+
+# ============================================================
+# Sentinel 配置
+# ============================================================
+spring.cloud.sentinel:
+  # 是否提前初始化 Sentinel（默认 true）
+  eager: true
+
+  # ---- Sentinel Dashboard（可选，启动后访问 localhost:8080） ----
+  transport:
+    dashboard: 127.0.0.1:8080   # Dashboard 地址；没有就先注释掉
+    port: 8719                   # 与 Dashboard 通信的端口
+    client-ip: 127.0.0.1
+
+  # ---- 规则持久化到 Nacos（分布式环境打开）----
+  # 有了这个配置，规则不再是"内存即失"，服务重启后自动从 Nacos 拉回规则。
+  # 如果没有 Nacos，注释掉整个 datasource 块即可 —— 规则会从 SentinelConfig 初始化。
+  # datasource:
+  #   ds-flow:
+  #     nacos:
+  #       server-addr: 127.0.0.1:8848
+  #       namespace: public
+  #       group-id: DEFAULT_GROUP
+  #       data-id: ${spring.application.name}-flow-rules
+  #       data-type: json
+  #       rule-type: flow
+  #   ds-degrade:
+  #     nacos:
+  #       server-addr: 127.0.0.1:8848
+  #       namespace: public
+  #       group-id: DEFAULT_GROUP
+  #       data-id: ${spring.application.name}-degrade-rules
+  #       data-type: json
+  #       rule-type: degrade
+  #   ds-system:
+  #     nacos:
+  #       server-addr: 127.0.0.1:8848
+  #       namespace: public
+  #       group-id: DEFAULT_GROUP
+  #       data-id: ${spring.application.name}-system-rules
+  #       data-type: json
+  #       rule-type: system
+
+  # ---- Sentinel 对 Feign 的支持 ----
+  feign:
+    enabled: true   # 开启后 @FeignClient 自动被 Sentinel 保护
+
+  # ---- URL 自动聚合（避免 REST 路径参数导致资源名膨胀） ----
+  web-context-unify: true
+
+  # ---- Sentinel 日志 ----
+  log:
+    dir: logs/sentinel
+    switch-pid: true
+
+  # ---- HTTP 访问限流时返回自定义信息 ----
+  filter:
+    enabled: true   # 启用 Sentinel CommonFilter（对所有 URL 生效）
+    order: -2147483648
+
+# ============================================================
+# 日志
+# ============================================================
+logging:
+  level:
+    com.quick.springbootsentinel: debug
+    com.alibaba.csp.sentinel: info

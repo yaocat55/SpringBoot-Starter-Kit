@@ -1,0 +1,36 @@
+spring:
+  application:
+    name: springboot-elasticsearch
+
+  # ============================================================
+  # Elasticsearch 连接配置（Spring Boot 3.5 自动装配）
+  # ============================================================
+  elasticsearch:
+    # ---- 连接地址（集群逗号分隔） ----
+    # 本地开发：localhost:9200
+    # 生产集群：es-node1:9200,es-node2:9200,es-node3:9200
+    uris: http://localhost:9200
+
+    # ---- 连接超时 ----
+    connection-timeout: 3s
+    socket-timeout: 30s
+
+    # ---- 账号密码（ES 8.x 默认开启安全认证） ----
+    # 如果没有开启安全认证，注释掉即可
+    username: elastic
+    password: changeme
+
+# ============================================================
+# 日志
+# ============================================================
+logging:
+  level:
+    com.quick.springbootelasticsearch: debug
+    # 想看 ES 请求 JSON 的话改为 trace
+    org.springframework.data.elasticsearch.client.WIRE: trace
+
+# ============================================================
+# 服务器端口
+# ============================================================
+server:
+  port: 8086
