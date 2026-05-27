@@ -25,6 +25,7 @@ Spring Boot 3 日常开发组件模板合集，每个模块独立可运行，复
 | [springboot-redis](./springboot-redis) | Redis 缓存 |
 | [springboot-caffeine](./springboot-caffeine) | Caffeine 本地缓存 |
 | [springboot-mongdb](./springboot-mongdb) | MongoDB 集成 |
+| [springboot-elasticsearch](./springboot-elasticsearch) | Elasticsearch 搜索引擎 |
 
 ### RPC & HTTP 客户端
 
@@ -46,6 +47,7 @@ Spring Boot 3 日常开发组件模板合集，每个模块独立可运行，复
 | 模块 | 说明 |
 |------|------|
 | [springboot-nacos](./springboot-nacos) | Nacos 配置中心 & 服务发现 |
+| [springboot-sentinel](./springboot-sentinel) | Sentinel 限流/熔断/降级 |
 | [springboot-dynamictp](./springboot-dynamictp) | 动态线程池管理 |
 | [springboot-xxljob](./springboot-xxljob) | XXL-JOB 分布式任务调度 |
 
@@ -69,6 +71,4 @@ mvn clean compile
 
 ## 待接入
 
-- [ ] Elasticsearch
-- [ ] Sentinel
 - [ ] MinIO

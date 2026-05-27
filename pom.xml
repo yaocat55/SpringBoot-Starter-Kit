@@ -42,6 +42,9 @@
         <module>springboot-caffeine</module>
         <module>springboot-exception</module>
         <module>springboot-apiresult</module>
+        <module>springboot-sentinel</module>
+        <module>springboot-elasticsearch</module>
+        <module>springboot-qiniu</module>
     </modules>
 
 
