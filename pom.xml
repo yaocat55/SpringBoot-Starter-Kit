@@ -45,6 +45,8 @@
         <module>springboot-sentinel</module>
         <module>springboot-elasticsearch</module>
         <module>springboot-qiniu</module>
+        <module>springboot-starter-learn</module>
+
     </modules>
 
 

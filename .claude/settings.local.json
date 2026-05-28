@@ -95,7 +95,9 @@
       "Bash(javap -p 'co/elastic/clients/elasticsearch/core/search/FieldSuggester$Builder$ContainerBuilder.class')",
       "Bash(mvn dependency:list -q)",
       "Read(//c/Users/beluga/.m2/**)",
-      "Read(//d//**)"
+      "Read(//d//**)",
+      "Bash(rm -rf springboot-starter/src)",
+      "Bash(rm -rf springboot-starter/target)"
     ]
   }
 }
